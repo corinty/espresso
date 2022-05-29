@@ -7,6 +7,52 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Roaster {
+  id      String  @id @default(cuid())
+  name    String
+  address String?
+  roasts  Roast[]
+}
+
+model Roast {
+  id        String  @id @default(cuid())
+  name      String
+  roaster   Roaster @relation(fields: [roasterId], references: [id])
+  roasterId String
+  bags      Bag[]
+
+  @@unique([roasterId, name])
+}
+
+model Bag {
+  id         String            @id @default(cuid())
+  roastDate  DateTime?
+  openedDate DateTime          @default(now())
+  containers Container[]
+  roast      Roast             @relation(fields: [roastId], references: [id])
+  roastId    String
+  FreezerLog ContainerLedger[]
+  active     Boolean           @default(false)
+}
+
+model Container {
+  id              String            @id
+  coffee          Bag               @relation(fields: [coffeeId], references: [id])
+  coffeeId        String
+  updatedAt       DateTime          @updatedAt
+  containerLedger ContainerLedger[]
+}
+
+model ContainerLedger {
+  id          String    @id @default(cuid())
+  container   Container @relation(fields: [containerId], references: [id])
+  containerId String
+  bag         Bag       @relation(fields: [bagId], references: [id])
+  bagId       String
+  dateIn      DateTime
+  dateOut     DateTime?
+}
+
 model User {
   id    String @id @default(cuid())
   email String @unique
