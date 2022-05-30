@@ -42,6 +42,10 @@ export default function App() {
       <head>
         <Meta />
         <Links />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/axist@latest/dist/axist.min.css"
+        />
       </head>
       <body className="h-full">
         <Outlet />

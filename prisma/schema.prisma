@@ -19,26 +19,26 @@ model Roast {
   name      String
   roaster   Roaster @relation(fields: [roasterId], references: [id])
   roasterId String
-  bags      Bag[]
+  batches   Batch[]
 
   @@unique([roasterId, name])
 }
 
-model Bag {
-  id         String            @id @default(cuid())
-  roastDate  DateTime?
-  openedDate DateTime          @default(now())
-  containers Container[]
-  roast      Roast             @relation(fields: [roastId], references: [id])
-  roastId    String
-  FreezerLog ContainerLedger[]
-  active     Boolean           @default(false)
+model Batch {
+  id              String            @id @default(cuid())
+  roastDate       DateTime?
+  openedDate      DateTime          @default(now())
+  containers      Container[]
+  roast           Roast             @relation(fields: [roastId], references: [id])
+  roastId         String
+  ContainerLedger ContainerLedger[]
+  active          Boolean           @default(false)
 }
 
 model Container {
   id              String            @id
-  coffee          Bag               @relation(fields: [coffeeId], references: [id])
-  coffeeId        String
+  batch           Batch             @relation(fields: [batchId], references: [id])
+  batchId         String
   updatedAt       DateTime          @updatedAt
   containerLedger ContainerLedger[]
 }
@@ -47,8 +47,8 @@ model ContainerLedger {
   id          String    @id @default(cuid())
   container   Container @relation(fields: [containerId], references: [id])
   containerId String
-  bag         Bag       @relation(fields: [bagId], references: [id])
-  bagId       String
+  batch       Batch     @relation(fields: [batchId], references: [id])
+  batchId     String
   dateIn      DateTime
   dateOut     DateTime?
 }

@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { roasts, roasters, batches, containers } from "./seed_data";
+
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -24,32 +26,39 @@ async function seed() {
     },
   });
 
-  const randomDate = () =>
-    new Date(+new Date() - Math.floor(Math.random() * 10000000000));
-
-  const roaster = await prisma.roaster.create({
-    data: {
-      name: "Onyx Coffee Labs",
-      roasts: {
-        create: [{ name: "Southern Weather" }, { name: "The Big One" }],
-      },
-    },
+  // Seed Roasters
+  roasters.forEach(async (data) => {
+    await prisma.roaster.upsert({
+      where: { id: data.id },
+      create: data,
+      update: data,
+    });
   });
 
-  const roast = await prisma.roast.create({
-    data: { name: "Tropical Weather", roasterId: roaster.id },
+  // Seed Roasts
+  roasts.forEach(async (data) => {
+    await prisma.roast.upsert({
+      where: { id: data.id },
+      create: data,
+      update: data,
+    });
   });
 
-  const bag = await prisma.bag.create({
-    data: {
-      roastDate: randomDate(),
-      roastId: roast.id,
-    },
+  // Seed Batches
+  batches.forEach(async (data) => {
+    await prisma.batch.upsert({
+      where: { id: data.id },
+      create: data,
+      update: data,
+    });
   });
 
-  [1, 22, 45, 35, 22].forEach(async (id) => {
-    await prisma.container.create({
-      data: { id: id.toString(), coffeeId: bag.id },
+  // Containers
+  containers.forEach(async (data) => {
+    await prisma.container.upsert({
+      where: { id: data.id },
+      create: data,
+      update: data,
     });
   });
 
