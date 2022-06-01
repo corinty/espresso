@@ -9,7 +9,7 @@ generator client {
 
 model Roaster {
   id      String  @id @default(cuid())
-  name    String
+  name    String  @unique
   address String?
   roasts  Roast[]
 }
@@ -25,22 +25,22 @@ model Roast {
 }
 
 model Batch {
-  id              String            @id @default(cuid())
-  roastDate       DateTime?
-  openedDate      DateTime          @default(now())
-  containers      Container[]
-  roast           Roast             @relation(fields: [roastId], references: [id])
-  roastId         String
-  ContainerLedger ContainerLedger[]
-  active          Boolean           @default(false)
+  id            String            @id @default(cuid())
+  roastDate     DateTime?
+  openedDate    DateTime          @default(now())
+  containers    Container[]
+  roast         Roast             @relation(fields: [roastId], references: [id])
+  roastId       String
+  ledgerEntires ContainerLedger[]
+  active        Boolean           @default(false)
 }
 
 model Container {
-  id              String            @id
-  batch           Batch             @relation(fields: [batchId], references: [id])
-  batchId         String
-  updatedAt       DateTime          @updatedAt
-  containerLedger ContainerLedger[]
+  id            String            @id
+  batch         Batch?            @relation(fields: [batchId], references: [id])
+  batchId       String?
+  updatedAt     DateTime          @updatedAt
+  ledgerEntires ContainerLedger[]
 }
 
 model ContainerLedger {
@@ -51,6 +51,8 @@ model ContainerLedger {
   batchId     String
   dateIn      DateTime
   dateOut     DateTime?
+
+  @@unique([containerId, batchId])
 }
 
 model User {

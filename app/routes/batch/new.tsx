@@ -1,8 +1,9 @@
-import type { Batch } from "@prisma/client";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Button, TextField } from "@mui/material";
+import { useLoaderData, Form } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
+import RoastSelect from "~/components/RoastSelect";
 import { createBatch } from "~/models/batch.server";
 import { getAllRoasts } from "~/models/roast.server";
 
@@ -30,31 +31,20 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function NewBatch() {
-  const { roasts } = useLoaderData<LoaderData>();
   return (
-    <>
+    <div className="p-1 mx-auto">
       <h2>Create New Batch</h2>
-      <form method="post">
-        <p>
-          <label>
-            Roast:
-            <select name="roastId">
-              <option hidden></option>
-              {roasts.map((roast) => (
-                <option key={roast.id} value={roast.id}>
-                  {roast.name} | {roast.roaster.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </p>
+      <Form method="post">
+        <RoastSelect />
         <p>
           <label>
             Roast Date: <input type="date" name="roastDate" />
           </label>
         </p>
-        <button type="submit">Create</button>
-      </form>
-    </>
+        <Button variant="contained" type="submit">
+          Create Batch
+        </Button>
+      </Form>
+    </div>
   );
 }

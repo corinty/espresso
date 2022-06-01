@@ -1,6 +1,8 @@
-import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { Button } from "@mui/material";
+import { Link, Outlet, useLoaderData, useFetcher } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
+import { Fragment } from "react";
 import { getBatchById } from "~/models/batch.server";
 
 type LoaderData = {
@@ -9,13 +11,13 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ params }) => {
   const batch = await getBatchById({ batchId: params.batchId! });
-  console.log(batch);
 
   return json<LoaderData>({ batch: batch! });
 };
 
 export default function Batch() {
   const { batch } = useLoaderData<LoaderData>();
+  const ledgerFetcher = useFetcher();
   return (
     <>
       <h2>Batch: {batch.id} </h2>
@@ -23,15 +25,60 @@ export default function Batch() {
       <div>Coffee: {batch.roast.name}</div>
       <div>Roaster: {batch.roast.roaster.name}</div>
       <div>
-        Roast Date:{" "}
-        {new Date(batch.roastDate)?.toLocaleDateString("en-US", {
-          dateStyle: "short",
-        })}
+        Roast Date:
+        {batch.roastDate
+          ? new Date(batch.roastDate).toLocaleDateString("en-US", {
+              dateStyle: "short",
+            })
+          : "N/A"}
       </div>
-
       <section>
         <Outlet context={batch} />
       </section>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+        <div>
+          <h3>Containers</h3>
+          <ul>
+            {batch.containers.map((container) => (
+              <li>{container.id}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3>Ledger Entiries</h3>
+          {batch.ledgerEntires.map(
+            ({ id, batchId, containerId, dateIn, dateOut }) => (
+              <div key={id}>
+                <ul>
+                  <li>ID: {id}</li>
+                  <li>Container Id: {containerId}</li>
+                  <li>Date In: {dateIn}</li>
+                  <li>Date Out: {dateOut}</li>
+                </ul>
+                <ledgerFetcher.Form method="delete" action="/ledger/close">
+                  <input
+                    type="text"
+                    hidden
+                    name="containerId"
+                    value={containerId}
+                    readOnly
+                  />
+                  <input
+                    type="text"
+                    hidden
+                    name="batchId"
+                    value={batchId}
+                    readOnly
+                  />
+                  <Button variant="contained" type="submit">
+                    Close Entry
+                  </Button>
+                </ledgerFetcher.Form>
+              </div>
+            )
+          )}
+        </div>
+      </div>
     </>
   );
 }

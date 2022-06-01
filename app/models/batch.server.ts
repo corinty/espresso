@@ -7,6 +7,10 @@ export const createBatch = (data: Pick<Batch, "roastDate" | "roastId">) =>
 export function getBatchById({ batchId }: { batchId: Batch["id"] }) {
   return prisma.batch.findUnique({
     where: { id: batchId },
-    include: { containers: true, roast: { include: { roaster: true } } },
+    include: {
+      containers: true,
+      roast: { include: { roaster: true } },
+      ledgerEntires: { where: { dateOut: null } },
+    },
   });
 }
