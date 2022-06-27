@@ -69,3 +69,9 @@ export function useUser(): User {
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
+
+export function formatShortDate(date: Date) {
+  return new Date(date).toLocaleDateString("en-US", {
+    dateStyle: "short",
+  });
+}

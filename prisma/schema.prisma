@@ -27,7 +27,7 @@ model Roast {
 model Batch {
   id            String            @id @default(cuid())
   roastDate     DateTime?
-  openedDate    DateTime          @default(now())
+  createdAt     DateTime          @default(now())
   containers    Container[]
   roast         Roast             @relation(fields: [roastId], references: [id])
   roastId       String

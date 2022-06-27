@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Autocomplete,
 } from "@mui/material";
 import type { Roast } from "@prisma/client";
 import { useFetcher } from "@remix-run/react";
@@ -23,18 +24,20 @@ export default function CreateRoastDialog({
   handleClose: () => void;
 }) {
   const fetcher = useFetcher();
+  const roasterNames = useFetcher();
 
   const ref = useRef(null);
 
   useEffect(() => {
+    if (roasterNames.type === "init") {
+      roasterNames.load("/roaster/names");
+    }
     if (fetcher.type == "done" && fetcher.data.ok) {
       //@ts-ignore
-      console.log("we should do it?");
-
       ref.current.reset();
       handleDone(fetcher.data.roast as Roast);
     }
-  }, [fetcher, handleDone]);
+  }, [fetcher, handleDone, roasterNames, roasterNames.data]);
 
   return (
     <Dialog
@@ -61,13 +64,19 @@ export default function CreateRoastDialog({
               type="text"
               variant="standard"
             />
-            <TextField
-              autoFocus
-              margin="dense"
-              name="roasterName"
-              label="Roaster Name"
-              type="text"
-              variant="standard"
+            <Autocomplete
+              freeSolo
+              options={roasterNames.data || []}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  autoFocus
+                  fullWidth
+                  variant="standard"
+                  name="roasterName"
+                  label="Roaster"
+                />
+              )}
             />
           </div>
         </DialogContent>

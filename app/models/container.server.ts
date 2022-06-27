@@ -6,7 +6,8 @@ export type { Container } from "@prisma/client";
 
 export function getContainers() {
   return prisma.container.findMany({
-    include: { batch: { include: { roast: true } } },
+    include: { batch: { include: { roast: { include: { roaster: true } } } } },
+    orderBy: { id: "desc" },
   });
 }
 

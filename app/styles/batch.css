@@ -1,0 +1,20 @@
+.batch-list {
+  display: grid;
+  gap: 12px;
+}
+.single-batch {
+  text-decoration: unset !important;
+  color: black;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.single-batch:hover {
+  background: grey;
+  color: white;
+}

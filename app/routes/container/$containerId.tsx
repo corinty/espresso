@@ -27,16 +27,17 @@ export default function Container() {
   return (
     <>
       <Link
-        to="/containers"
+        to=".."
         type="button"
         className="px-3 py-1 font-bold text-white rounded bg-slate-500 hover:bg-slate-900"
       >
         Back
       </Link>
       <h2>This is the individual container</h2>
-      <div>Batch ID: {container.batchId}</div>
-      <div>Container Id: {container?.id}</div>
-      <div>Coffee Name: {batch.roast.name}</div>
+      <div>Container Id: {container?.id || "null"}</div>
+      <br />
+      <div>Batch ID: {container.batchId || "null"}</div>
+      <div>Coffee Name: {batch?.roast.name || "null"}</div>
     </>
   );
 }

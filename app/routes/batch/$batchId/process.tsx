@@ -1,22 +1,31 @@
 import { Button, TextField } from "@mui/material";
 import type { Batch } from "@prisma/client";
-import { Form, useOutletContext, useNavigate } from "@remix-run/react";
+import { useOutletContext, useNavigate } from "@remix-run/react";
 
+import type { ActionFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { createLedgerEntry } from "~/models/containerLedger.server";
+import { zfd } from "zod-form-data";
 
-export const action = async ({ request }) => {
-  const data = await request.formData();
+const schema = zfd.formData({
+  batchId: zfd.text(),
+  containerId: zfd.text(),
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  const { batchId, containerId } = schema.parse(await request.formData());
 
   const { container, ledgerEntry } = await createLedgerEntry({
-    batchId: data.get("batchId"),
-    containerId: data.get("containerId"),
+    batchId,
+    containerId,
   });
+
   return json({ container, ledgerEntry });
 };
 
 export default function ProcessBatch() {
   const batch = useOutletContext<Batch>();
+
   const navigate = useNavigate();
   return (
     <>
@@ -28,13 +37,11 @@ export default function ProcessBatch() {
           onKeyDown={(e) => {
             if (e.code === "Escape") navigate("..");
           }}
-          type={"text"}
-          inputProps={{ inputMode: "numeric" }}
           label="Container ID"
           required
           autoFocus
           name="containerId"
-        ></TextField>
+        />
 
         <div
           style={{

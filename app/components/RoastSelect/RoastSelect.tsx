@@ -1,6 +1,13 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import {
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+} from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useFetcher } from "@remix-run/react";
 import CreateRoastDialog from "./components/Dialog";
 
@@ -9,28 +16,30 @@ const filter = createFilterOptions<FilmOptionType>();
 export default function RoastSelect() {
   const [value, setValue] = React.useState<FilmOptionType | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const optionFetcher = useFetcher();
+
+  const roastFetcher = useFetcher();
 
   React.useEffect(() => {
-    if (optionFetcher.type === "init") {
-      optionFetcher.load("/roasts");
+    if (roastFetcher.type === "init") {
+      roastFetcher.load("/roasts");
     }
-  }, [optionFetcher]);
+  }, [roastFetcher]);
+
   const handleClose = () => {
     setDialogRoastName("");
     setIsOpen(false);
   };
 
   const [dialogRoastName, setDialogRoastName] = React.useState<string>("");
-  if (!optionFetcher.data) return null;
+  if (!roastFetcher.data) return null;
 
   return (
     <React.Fragment>
-      <input type="text" name="roastId" value={value?.id} hidden />
-
-      <button onClick={() => setIsOpen(!isOpen)}>Open</button>
+      <input type="text" value={value?.id} name="roastId" hidden readOnly />
       <Autocomplete
         value={value}
+        fullWidth
+        style={{ width: "100%" }}
         onChange={(event, newValue) => {
           console.log(newValue);
 
@@ -59,7 +68,7 @@ export default function RoastSelect() {
 
           return filtered;
         }}
-        options={optionFetcher.data}
+        options={roastFetcher.data}
         getOptionLabel={(option) => {
           // e.g value selected with enter, right from the input
           if (typeof option === "string") {
@@ -74,7 +83,18 @@ export default function RoastSelect() {
         clearOnBlur
         handleHomeEndKeys
         groupBy={(option) => option?.roaster?.name}
-        renderOption={(props, option) => <li {...props}>{option.name}</li>}
+        renderOption={(props, option) => (
+          <ListItem {...props}>
+            <ListItemText primary={option.name} />
+            <ListItemSecondaryAction>
+              <roastFetcher.Form method="delete" action={`/roast/${option.id}`}>
+                <IconButton edge="end" aria-label="delete" type="submit">
+                  <DeleteForeverIcon />
+                </IconButton>
+              </roastFetcher.Form>
+            </ListItemSecondaryAction>
+          </ListItem>
+        )}
         sx={{ width: 300 }}
         renderInput={(params) => {
           return <TextField {...params} label="Select Roast" />;
@@ -83,7 +103,6 @@ export default function RoastSelect() {
       <CreateRoastDialog
         handleClose={handleClose}
         handleDone={(value) => {
-          console.log("handling the doneness with value", { value });
           setValue(value);
           setIsOpen(false);
         }}

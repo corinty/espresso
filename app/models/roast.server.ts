@@ -7,7 +7,6 @@ export const getAllRoasts = async () =>
     include,
     orderBy: { name: "asc" },
   });
-
 export const createRoast = async ({
   coffeeName,
   roasterName,
@@ -27,3 +26,7 @@ export const createRoast = async ({
     },
     include,
   });
+
+export const deleteRoast = async ({ id }: { id: string }) => {
+  return await prisma.roast.delete({ where: { id } });
+};
