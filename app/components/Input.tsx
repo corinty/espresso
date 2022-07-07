@@ -4,6 +4,4 @@ export default function Input({
 }: {
   label: String;
   name: String;
-  }) {
-
-}
+}) {}

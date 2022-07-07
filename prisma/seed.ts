@@ -27,7 +27,7 @@ async function seed() {
   });
 
   // Seed Roasters
-  roasters.forEach(async (data) => {
+  await roasters.forEach(async (data) => {
     await prisma.roaster.upsert({
       where: { id: data.id },
       create: data,
@@ -36,7 +36,7 @@ async function seed() {
   });
 
   // Seed Roasts
-  roasts.forEach(async (data) => {
+  await roasts.forEach(async (data) => {
     await prisma.roast.upsert({
       where: { id: data.id },
       create: data,
@@ -45,7 +45,7 @@ async function seed() {
   });
 
   // Seed Batches
-  batches.forEach(async (data) => {
+  await batches.forEach(async (data) => {
     await prisma.batch.upsert({
       where: { id: data.id },
       create: data,
@@ -54,28 +54,12 @@ async function seed() {
   });
 
   // Containers
-  containers.forEach(async (data) => {
+  await containers.forEach(async (data) => {
     await prisma.container.upsert({
       where: { id: data.id },
       create: data,
       update: data,
     });
-  });
-
-  await prisma.note.create({
-    data: {
-      title: "My first note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
-
-  await prisma.note.create({
-    data: {
-      title: "My second note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
   });
 
   console.log(`Database has been seeded. 🌱`);

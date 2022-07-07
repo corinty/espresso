@@ -8,7 +8,9 @@ export const getAllBatches = () =>
   prisma.batch.findMany({
     include: {
       roast: { include: { roaster: true } },
+      ledgerEntires: { select: { dateIn: true, dateOut: true, id: true } },
     },
+    orderBy: { createdAt: "desc" },
   });
 
 export const getActiveBatch = () =>

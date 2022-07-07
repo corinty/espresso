@@ -2,7 +2,6 @@ a > button {
   text-decoration: none !important;
 }
 
-#web-camera {
-  /* height: 90vh; */
-  /* width: 100vw; */
+body {
+  padding: 20px;
 }

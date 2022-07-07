@@ -2,19 +2,22 @@
   display: grid;
   gap: 12px;
 }
-.single-batch {
-  text-decoration: unset !important;
-  color: black;
-  display: grid;
+.batch {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  grid-template-columns: repeat(2, 1fr);
+  color: black;
   border: 1px solid black;
   border-radius: 8px;
   padding: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
-.single-batch:hover {
-  background: grey;
-  color: white;
+
+.batch-description {
+  text-decoration: unset !important;
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+
+  transition: all 0.2s ease;
 }
