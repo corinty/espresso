@@ -18,7 +18,7 @@ export async function action({ request }: { request: Request }) {
     });
 
     return json({ ok: true, roast });
-  } catch (error) {
+  } catch (error: any) {
     return json({ error: error.message });
   }
 }

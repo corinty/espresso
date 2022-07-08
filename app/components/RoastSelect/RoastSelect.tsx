@@ -76,7 +76,7 @@ export default function RoastSelect() {
           selectOnFocus
           clearOnBlur
           handleHomeEndKeys
-          groupBy={(option) => option?.roaster?.name}
+          groupBy={(option) => option?.roaster?.name || "No Roaster"}
           renderOption={(props, option) => <li {...props}>{option.name}</li>}
           renderInput={(params) => {
             return <TextField {...params} label="Select Roast" />;
