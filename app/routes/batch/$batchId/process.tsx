@@ -2,26 +2,14 @@ import { Button, TextField } from "@mui/material";
 import type { Batch } from "@prisma/client";
 import { useOutletContext, useNavigate } from "@remix-run/react";
 
-import type { ActionFunction } from "@remix-run/server-runtime";
-import { json } from "@remix-run/server-runtime";
-import { createLedgerEntry } from "~/models/containerLedger.server";
-import { zfd } from "zod-form-data";
+
 
 const schema = zfd.formData({
   batchId: zfd.text(),
   containerId: zfd.text(),
 });
 
-export const action: ActionFunction = async ({ request }) => {
-  const { batchId, containerId } = schema.parse(await request.formData());
 
-  const { container, ledgerEntry } = await createLedgerEntry({
-    batchId,
-    containerId,
-  });
-
-  return json({ container, ledgerEntry });
-};
 
 export default function ProcessBatch() {
   const batch = useOutletContext<Batch>();
